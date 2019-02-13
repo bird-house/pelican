@@ -1,0 +1,17 @@
+name: pelican
+channels:
+- conda-forge
+dependencies:
+- pywps=4.2
+- jinja2
+- click
+- psutil
+# opendap support
+- netcdf4
+# dask
+- xarray
+# plot
+- cartopy
+- matplotlib
+- pip:
+  - -e git+https://github.com/bird-house/OWSLib-esgfwps.git@master#egg=owslib-esgfwps
