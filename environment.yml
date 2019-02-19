@@ -6,6 +6,9 @@ dependencies:
 - jinja2
 - click
 - psutil
+# owslib esgfwps
+- owslib>=0.17
+- owslib-esgfwps=0.1.0
 # opendap support
 - netcdf4
 # dask
@@ -13,5 +16,5 @@ dependencies:
 # plot
 - cartopy
 - matplotlib
-- pip:
-  - -e git+https://github.com/bird-house/OWSLib-esgfwps.git@master#egg=owslib-esgfwps
+#- pip:
+#  - -e git+https://github.com/bird-house/OWSLib-esgfwps.git@master#egg=owslib-esgfwps
