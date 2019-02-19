@@ -1,6 +1,7 @@
 name: pelican
 channels:
 - conda-forge
+- birdhouse
 dependencies:
 - pywps=4.2
 - jinja2
