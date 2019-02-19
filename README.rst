@@ -24,7 +24,7 @@ Pelican (the bird)
 A Web Processing Service for ESGF compute.
 
 * Free software: Apache Software License 2.0
-* Documentation: https://pelican.readthedocs.io.
+* Documentation: https://birdhouse-pelican.readthedocs.io.
 
 Credits
 -------
