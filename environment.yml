@@ -1,15 +1,13 @@
 name: pelican
 channels:
-- conda-forge
-- birdhouse
+- defaults
 dependencies:
-- pywps=4.2
+- pip
 - jinja2
 - click
 - psutil
-# owslib esgfwps
-- owslib>=0.17
-- owslib-esgfwps=0.1.0
+# OWSLib
+- lxml
 # opendap support
 - netcdf4
 # dask
@@ -17,5 +15,8 @@ dependencies:
 # plot
 - cartopy
 - matplotlib
-#- pip:
-#  - -e git+https://github.com/bird-house/OWSLib-esgfwps.git@master#egg=owslib-esgfwps
+# tests
+- pytest
+- pip:
+  - -e git+https://github.com/geopython/pywps@master#egg=pywps
+  - -e git+https://github.com/bird-house/OWSLib-esgfwps.git@master#egg=owslib-esgfwps

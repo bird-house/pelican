@@ -143,9 +143,9 @@ class PelicanSubset(Process):
         # subsetting
         import xarray as xr
         response.update_status('PyWPS Process started.', 0)
-
-        variable = Variable.from_json(json.loads(request.inputs['variable'][0].data))
-        domain = Domain.from_json(json.loads(request.inputs['domain'][0].data))
+        # get variable and domain from json input
+        variable = Variable.from_json(json.loads(request.inputs['variable'][0].data)[0])
+        domain = Domain.from_json(json.loads(request.inputs['domain'][0].data)[0])
 
         # TODO: Use chunks for parallel processing with dask.distributed
         output_file = self.workdir + '/out.nc'
@@ -153,10 +153,10 @@ class PelicanSubset(Process):
             da = ds[variable.var_name]
             sl = {}
             for dim in domain.dimensions:
-                sl = {dim['name']: slice(dim['start'], dim['end'], dim['step'])}
-                if dim['crs'] == 'values':
+                sl = {dim.name: slice(dim.start, dim.end, dim.step)}
+                if dim.crs == 'values':
                     da = da.sel(**sl)
-                elif dim['crs'] == 'indices':
+                elif dim.crs == 'indices':
                     da = da.isel(**sl)
             if 0 in da.shape:
                 raise ValueError("Subsetting operation yields no values for `{}` dimension.".
