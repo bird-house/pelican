@@ -1,5 +1,3 @@
-import pytest
-
 from pywps import Service
 from pywps.tests import assert_response_success
 
@@ -16,7 +14,6 @@ domain = Domain([
 ])
 
 
-@pytest.mark.online
 def test_wps_esgf_subset():
     client = client_for(Service(processes=[PelicanSubset()]))
     datainputs = "variable={variable};" \
