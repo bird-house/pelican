@@ -4,20 +4,28 @@ from pywps.tests import assert_response_success
 from .common import client_for, resource_file, get_output
 from pelican.processes.wps_esgf_subset import PelicanSubset
 import owslib.wps
-from owslib_esgfwps import Domain, Variable, Dimension
+from owslib_esgfwps import (
+    Domain,
+    Domains,
+    Variable,
+    Variables,
+    Dimension
+)
 
 NC_FILE_URL = resource_file('test.nc')
 
-variable = Variable(var_name='meantemp', uri=NC_FILE_URL, name='test')
-domain = Domain([
-    Dimension('time', 0, 10, crs='indices'),
-])
+variable = Variable(var_name='meantemp', uri=NC_FILE_URL)
+domain = Domain(dict(
+    time=Dimension(0, 10, crs='indices'),
+))
 
 
 def test_wps_esgf_subset():
     client = client_for(Service(processes=[PelicanSubset()]))
     datainputs = "variable={variable};" \
-                 "domain={domain}".format(variable=variable.value, domain=domain.value)
+                 "domain={domain}".format(
+                     variable=Variables([variable]).value,
+                     domain=Domains([domain]).value)
     resp = client.get(
         service='wps', request='execute', version='1.0.0',
         identifier='pelican_subset',

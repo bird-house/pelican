@@ -17,7 +17,7 @@ from pywps import ComplexInput, ComplexOutput, FORMATS, Format
 from pywps.inout.basic import SOURCE_TYPE
 from pywps.validator.mode import MODE
 from pywps.app.Common import Metadata
-from owslib_esgfwps import Variable, Domain
+from owslib_esgfwps import Variables, Domains
 
 import logging
 LOGGER = logging.getLogger("PYWPS")
@@ -144,16 +144,16 @@ class PelicanSubset(Process):
         import xarray as xr
         response.update_status('PyWPS Process started.', 0)
         # get variable and domain from json input
-        variable = Variable.from_json(json.loads(request.inputs['variable'][0].data)[0])
-        domain = Domain.from_json(json.loads(request.inputs['domain'][0].data)[0])
+        variable = Variables.from_json(json.loads(request.inputs['variable'][0].data)).variables[0]
+        domain = Domains.from_json(json.loads(request.inputs['domain'][0].data)).domains[0]
 
         # TODO: Use chunks for parallel processing with dask.distributed
         output_file = self.workdir + '/out.nc'
         with xr.open_dataset(variable.uri) as ds:
             da = ds[variable.var_name]
             sl = {}
-            for dim in domain.dimensions:
-                sl = {dim.name: slice(dim.start, dim.end, dim.step)}
+            for dim_name, dim in domain.dimensions.items():
+                sl = {dim_name: slice(dim.start, dim.end, dim.step)}
                 if dim.crs == 'values':
                     da = da.sel(**sl)
                 elif dim.crs == 'indices':
