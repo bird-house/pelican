@@ -17,7 +17,7 @@ from pywps import ComplexInput, ComplexOutput, FORMATS, Format
 from pywps.inout.basic import SOURCE_TYPE
 from pywps.validator.mode import MODE
 from pywps.app.Common import Metadata
-from owslib_esgfwps import Variables, Domains
+from owslib_esgfwps import Variables, Domains, Outputs, Output
 
 import logging
 LOGGER = logging.getLogger("PYWPS")
@@ -75,13 +75,13 @@ def esgf_api(F):
         ComplexInput('variable', 'variable',
                      abstract="",
                      supported_formats=[FORMATS.JSON],
-                     min_occurs=0, max_occurs=1,
+                     min_occurs=1, max_occurs=1,
                      mode=MODE.SIMPLE
                      ),
         ComplexInput('domain', 'domain',
                      abstract="",
                      supported_formats=[FORMATS.JSON],
-                     min_occurs=0, max_occurs=1,
+                     min_occurs=1, max_occurs=1,
                      mode=MODE.SIMPLE
                      ),
         ComplexInput('operation', 'operation',
@@ -92,10 +92,17 @@ def esgf_api(F):
                      ),
     ]
 
+    outputs = [
+        ComplexOutput('output', 'Output',
+                      as_reference=False,
+                      supported_formats=[FORMATS.JSON], ),
+    ]
+
     def wrapper(self):
         F(self)
         self.profile.append('ESGF-API')
         self.inputs.extend(inputs)
+        self.outputs.extend(outputs)
     return wrapper
 
 
@@ -110,7 +117,7 @@ class PelicanSubset(Process):
     def __init__(self):
         inputs = []
         outputs = [
-            ComplexOutput('output', 'Output',
+            ComplexOutput('nc', 'NetCDF',
                           as_reference=True,
                           supported_formats=[FORMATS.NETCDF], ),
             ComplexOutput('ncdump', 'Metadata',
@@ -137,9 +144,6 @@ class PelicanSubset(Process):
             status_supported=True)
 
     def _handler(self, request, response):
-        # TODO: handle api_key in pywps or twitcher middleware
-        # api_key = request.http_request.headers.get('Api-Key')
-
         # subsetting
         import xarray as xr
         response.update_status('PyWPS Process started.', 0)
@@ -163,7 +167,8 @@ class PelicanSubset(Process):
                                  format(da.dims[da.shape.index(0)]))
 
             da.to_netcdf(output_file)
-        response.outputs['output'].file = output_file
+        response.outputs['nc'].file = output_file
+        response.outputs['output'].data = Outputs([Output(uri='http://test.nc')]).json
         response.update_status('subsetting done.', 70)
         # plot preview
         try:
