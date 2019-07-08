@@ -8,6 +8,7 @@ dependencies:
 - psutil
 # OWSLib
 - lxml
+- yaml
 # opendap support
 - netcdf4
 # dask
