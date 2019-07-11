@@ -35,7 +35,8 @@ class PelicanSubset(Process):
             ComplexOutput('preview', 'Preview',
                           abstract='Preview of subsetted Dataset.',
                           as_reference=True,
-                          supported_formats=[Format('image/png')],), ]
+                          supported_formats=[Format('image/png')],),
+        ]
         super(PelicanSubset, self).__init__(
             self._handler,
             identifier='pelican_subset',
