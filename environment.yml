@@ -1,6 +1,6 @@
 name: pelican
 channels:
-- defaults
+- conda-forge
 dependencies:
 - pip
 - jinja2
@@ -13,6 +13,7 @@ dependencies:
 - netcdf4
 # dask
 - xarray
+- dask
 # plot
 - cartopy
 - matplotlib

@@ -77,7 +77,7 @@ def simple_plot_preview(dataset, variable, output_dir='.'):
 
 def subset(dataset, variable, dimensions, output_dir='.'):
     output_file = os.path.join(output_dir, 'out.nc')
-    with xr.open_dataset(dataset, decode_cf=False) as ds:
+    with xr.open_dataset(dataset, decode_cf=False, chunks=10) as ds:
         da = ds[variable]
         sl = {}
         for dim_name, dim in dimensions.items():
@@ -89,6 +89,6 @@ def subset(dataset, variable, dimensions, output_dir='.'):
         if 0 in da.shape:
             raise ValueError("Subsetting operation yields no values for `{}` dimension.".
                              format(da.dims[da.shape.index(0)]))
-
+        # TODO: causes exception on second wps request with xarray, dask, netcdf4 version from conda defaults
         da.to_netcdf(output_file)
     return output_file
